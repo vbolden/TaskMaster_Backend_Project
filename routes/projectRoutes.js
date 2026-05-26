@@ -50,5 +50,29 @@ projectRouter.get("/:id", authMiddleware, async (req, res) => {
 });
 
 // UPDATE
+projectRouter.put("/:id", authMiddleware, async (req, res) => {
+    try {
+        const { name, description } = req.body;
+
+        const updatedProject = await Project.findOneAndUpdate(
+            {
+                _id: req.params.id,
+                user: req.user._id,
+            },
+            { name, description },
+            {
+                new: true
+            }
+        );
+
+        if (!updatedProject) {
+            return res.status(404).json({ message: "Project not found." });
+        }
+
+        res.json(updatedProject);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
 // DELETE
