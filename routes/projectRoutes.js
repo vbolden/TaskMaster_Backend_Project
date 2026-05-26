@@ -16,7 +16,21 @@ projectRouter.post("/", authMiddleware, async (req, res) => {
     }
 });
 
-// READ
+// READ ALL
+projectRouter.get("/", authMiddleware, async (req, res) => {
+    try {
+        const projects = await Project.find({
+            user: req.user._id,
+        });
+
+        res.json(projects);
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// READ ONE 
 
 // UPDATE
 
