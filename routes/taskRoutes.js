@@ -4,7 +4,7 @@ const Project = require('../models/Project');
 const authMiddleware = require('../utils/auth');
 
 // CREATE
-taskRouter.post("/:projectId/tasks", authMiddleware, async (req, res) => {
+taskRouter.post("/projects/:projectId/tasks", authMiddleware, async (req, res) => {
     try {
         // FIND PROJECT BY ID
         const project = await Project.findOne({
@@ -32,7 +32,7 @@ taskRouter.post("/:projectId/tasks", authMiddleware, async (req, res) => {
 });
 
 // READ ALL TASKS
-taskRouter.get("/:projectId/tasks", authMiddleware, async (req, res) => {
+taskRouter.get("/projects/:projectId/tasks", authMiddleware, async (req, res) => {
     try {
         // FIND PROJECT BY ID
         const project = await Project.findOne({
@@ -60,7 +60,7 @@ taskRouter.get("/:projectId/tasks", authMiddleware, async (req, res) => {
 });
 
 // UPDATE A TASK
-taskRouter.put("/:taskId", authMiddleware, async (req, res) => {
+taskRouter.put("/tasks/:taskId", authMiddleware, async (req, res) => {
     try {
         // FIND THE TASK
         const task = await Task.findById(req.params.taskId);
@@ -106,7 +106,7 @@ taskRouter.put("/:taskId", authMiddleware, async (req, res) => {
 });
 
 // DELETE A TASK
-taskRouter.delete("/:taskId", authMiddleware, async (req, res) => {
+taskRouter.delete("/tasks/:taskId", authMiddleware, async (req, res) => {
     try {
         // FIND THE TASK
         const task = await Task.findById(req.params.taskId);
