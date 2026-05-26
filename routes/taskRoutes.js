@@ -30,3 +30,31 @@ taskRouter.post("/:projectId/tasks", authMiddleware, async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+// READ ALL TASKS
+taskRouter.get("/:projectId/tasks", authMiddleware, async (req, res) => {
+    try {
+        // FIND PROJECT BY ID
+        const project = await Project.findOne({
+            _id: req.params.projectId,
+            user: req.user._id,
+        });
+
+        // CHECK IF OWNED BY USER
+        if (!project) {
+            return res.status(403).json({
+                message: "Unauthorized or project not found."
+            });
+        }
+
+        // GET ALL TASKS FOR THIS PROJECT
+        const tasks = await Task.find({
+            project: req.params.projectId,
+        });
+
+        res.json(tasks);
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
