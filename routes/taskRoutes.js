@@ -59,7 +59,7 @@ taskRouter.get("/:projectId/tasks", authMiddleware, async (req, res) => {
     }
 });
 
-// UPDATE A SINGLE TASK
+// UPDATE A TASK
 taskRouter.put("/:taskId", authMiddleware, async (req, res) => {
     try {
         // FIND THE TASK
@@ -100,6 +100,43 @@ taskRouter.put("/:taskId", authMiddleware, async (req, res) => {
         );
 
         res.json(updatedTask);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// DELETE A TASK
+taskRouter.delete("/:taskId", authMiddleware, async (req, res) => {
+    try {
+        // FIND THE TASK
+        const task = await Task.findById(req.params.taskId);
+
+        if (!task) {
+            return res.status(404).json({
+                message: "Task not found"
+            });
+        }
+
+        // FIND PARENT PROJECT
+        const project = await Project.findOne({
+            _id: task.project,
+            user: req.user._id,
+        });
+
+        // VERIFY OWNERSHIP
+        if (!project) {
+            return res.status(403).json({
+                message: "Unauthorized or project not found."
+            });
+        }
+
+        // DELETE
+        await Task.findByIdAndDelete(req.params.taskId);
+
+        res.json({
+            message: "Task deleted successfully."
+        });
+
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
