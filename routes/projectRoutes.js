@@ -76,3 +76,25 @@ projectRouter.put("/:id", authMiddleware, async (req, res) => {
 });
 
 // DELETE
+projectRouter.delete("/:id", authMiddleware, async (req, res) => {
+    try {
+        const deleteProject = await Project.findOneAndDelete({
+            _id: req.params.id,
+            user: req.user._id,
+        });
+
+        if (!deleteProject) {
+            return res.status(404).json({
+                message: "Project not found."
+            });
+        }
+
+        res.json({
+            message: "Bookmark deleted successfully."
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+module.exports = projectRouter;
