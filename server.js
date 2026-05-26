@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/users", userRouter);
 app.use("/api/projects", projectRouter);
-app.use("/api/tasks", taskRouter);
+app.use("/api", taskRouter);
 
 // PORT
 app.listen(PORT, () => {
