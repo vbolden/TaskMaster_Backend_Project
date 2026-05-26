@@ -141,3 +141,5 @@ taskRouter.delete("/:taskId", authMiddleware, async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+module.exports = taskRouter;
