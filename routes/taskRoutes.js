@@ -58,3 +58,49 @@ taskRouter.get("/:projectId/tasks", authMiddleware, async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+// UPDATE A SINGLE TASK
+taskRouter.put("/:taskId", authMiddleware, async (req, res) => {
+    try {
+        // FIND THE TASK
+        const task = await Task.findById(req.params.taskId);
+
+        if (!task) {
+            return res.status(404).json({
+                message: "Task not found"
+            });
+        }
+
+        // FIND PARENT PROJECT
+        const project = await Project.findOne({
+            _id: task.project,
+            user: req.user._id,
+        });
+
+        // VERIFY OWNERSHIP
+        if (!project) {
+            return res.status(403).json({
+                message: "Unauthorized or project not found."
+            });
+        }
+
+        // UPDATE TASK
+        const { title, description, status } = req.body;
+
+        const updatedTask = await Task.findByIdAndUpdate(
+            req.params.taskId,
+            {
+                title,
+                description,
+                status
+            },
+            {
+                new: true,
+            }
+        );
+
+        res.json(updatedTask);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
